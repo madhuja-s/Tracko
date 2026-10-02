@@ -6,6 +6,7 @@ import VerifyEmail from './pages/VerifyEmail'
 import ForgotPassword from './pages/ForgotPassword'
 import Onboarding from './pages/Onboarding'
 import Dashboard from './pages/Dashboard'
+import ManageRoutine from './pages/ManageRoutine'
 
 export default function App() {
   return (
@@ -27,6 +28,14 @@ export default function App() {
         element={
           <ProtectedRoute>
             <Dashboard />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/routine"
+        element={
+          <ProtectedRoute>
+            <ManageRoutine />
           </ProtectedRoute>
         }
       />
