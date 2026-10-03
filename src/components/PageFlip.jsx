@@ -13,6 +13,7 @@ const DEPTH = {
   '/': 2,
   '/routine': 3,
   '/goals': 3,
+  '/settings': 3,
 }
 const depthOf = (path) => DEPTH[path] ?? 2
 

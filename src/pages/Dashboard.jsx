@@ -149,6 +149,13 @@ export default function Dashboard() {
             Goals & progress
           </Link>
         </div>
+
+        <Link
+          to="/settings"
+          className="mt-4 block text-center text-sm font-bold text-deepsage dark:text-sage"
+        >
+          ⏰ Reminder settings
+        </Link>
       </div>
     </div>
   )
