@@ -11,6 +11,9 @@ import Dashboard from './pages/Dashboard'
 import ManageRoutine from './pages/ManageRoutine'
 import Goals from './pages/Goals'
 import Settings from './pages/Settings'
+import Finance from './pages/Finance'
+import FinanceSettings from './pages/FinanceSettings'
+import Budgets from './pages/Budgets'
 
 export default function App() {
   return (
@@ -58,6 +61,30 @@ export default function App() {
           element={
             <ProtectedRoute>
               <Settings />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/money"
+          element={
+            <ProtectedRoute>
+              <Finance />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/money/settings"
+          element={
+            <ProtectedRoute>
+              <FinanceSettings />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/money/budgets"
+          element={
+            <ProtectedRoute>
+              <Budgets />
             </ProtectedRoute>
           }
         />

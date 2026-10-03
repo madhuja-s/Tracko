@@ -155,6 +155,14 @@ export default function Dashboard() {
           className="mt-4 block text-center text-sm font-bold text-deepsage dark:text-sage"
         >
           ⏰ Reminder settings
+                  <Link
+          to="/money"
+          className="mt-3 block text-center rounded-full bg-sage text-charcoal font-bold py-2"
+        >
+          💰 Money
+        </Link>
+
+        
         </Link>
       </div>
     </div>

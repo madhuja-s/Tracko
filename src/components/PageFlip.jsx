@@ -14,6 +14,9 @@ const DEPTH = {
   '/routine': 3,
   '/goals': 3,
   '/settings': 3,
+  '/money': 3,
+  '/money/settings': 4,
+  '/money/budgets': 4,
 }
 const depthOf = (path) => DEPTH[path] ?? 2
 
