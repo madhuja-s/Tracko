@@ -18,3 +18,97 @@
 body {
   @apply bg-cream text-charcoal font-sans dark:bg-dark-bg dark:text-cream;
 }
+
+/* ---------- notebook binding ---------- */
+.binding-hole {
+  position: absolute;
+  left: 8px;
+  top: 0;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: rgba(59, 55, 53, 0.2);
+}
+.binding-ring {
+  position: absolute;
+  left: 5px;
+  top: -1px;
+  width: 34px;
+  height: 10px;
+  border-radius: 999px;
+  background: var(--color-blush);
+  box-shadow: inset 0 -2px 0 rgba(59, 55, 53, 0.15),
+    0 2px 3px rgba(59, 55, 53, 0.22);
+}
+
+/* ---------- page flip ---------- */
+.leaf {
+  position: absolute;
+  inset: 0;
+  transform-origin: left center;
+  transform-style: preserve-3d;
+  z-index: 10;
+}
+.leaf-fwd {
+  animation: flipFwd 0.6s cubic-bezier(0.5, 0.05, 0.3, 1) forwards;
+}
+.leaf-back {
+  animation: flipBack 0.6s cubic-bezier(0.5, 0.05, 0.3, 1) forwards;
+}
+
+@keyframes flipFwd {
+  0%   { transform: rotateY(0deg) translateZ(0); }
+  50%  { transform: rotateY(-95deg) translateZ(26px) rotateX(1.2deg); }
+  100% { transform: rotateY(-180deg) translateZ(0); }
+}
+@keyframes flipBack {
+  0%   { transform: rotateY(-180deg) translateZ(0); }
+  50%  { transform: rotateY(-85deg) translateZ(26px) rotateX(-1.2deg); }
+  100% { transform: rotateY(0deg) translateZ(0); }
+}
+
+.face {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  background: var(--color-cream);
+}
+.face-back {
+  transform: rotateY(180deg);
+}
+:where(.dark) .face {
+  background: var(--color-dark-bg);
+}
+
+.ruled-lines {
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent 0 31px,
+    rgba(244, 198, 203, 0.35) 31px 32px
+  );
+}
+
+.shade-front,
+.shade-back {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  background: linear-gradient(90deg, rgba(59, 55, 53, 0.5), rgba(59, 55, 53, 0.12));
+}
+.leaf-fwd .shade-front  { animation: shadeOut 0.6s forwards; }
+.leaf-fwd .shade-back   { animation: shadeIn 0.6s forwards; }
+.leaf-back .shade-front { animation: shadeIn 0.6s forwards; }
+.leaf-back .shade-back  { animation: shadeOut 0.6s forwards; }
+
+@keyframes shadeOut { from { opacity: 0; }   to { opacity: 0.5; } }
+@keyframes shadeIn  { from { opacity: 0.5; } to { opacity: 0; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .leaf-fwd,
+  .leaf-back {
+    animation-duration: 0.01s;
+  }
+}

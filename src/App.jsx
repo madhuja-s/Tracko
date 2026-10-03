@@ -1,4 +1,5 @@
-import { Routes, Route, Navigate } from 'react-router-dom'
+import { Route, Navigate } from 'react-router-dom'
+import PageFlip from './components/PageFlip'
 import ProtectedRoute from './components/ProtectedRoute'
 import Login from './pages/Login'
 import Signup from './pages/Signup'
@@ -11,7 +12,7 @@ import Goals from './pages/Goals'
 
 export default function App() {
   return (
-    <Routes>
+    <PageFlip>
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<Signup />} />
       <Route path="/forgot" element={<ForgotPassword />} />
@@ -49,6 +50,6 @@ export default function App() {
         }
       />
       <Route path="*" element={<Navigate to="/" replace />} />
-    </Routes>
+    </PageFlip>
   )
 }
