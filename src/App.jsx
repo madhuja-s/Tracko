@@ -7,6 +7,7 @@ import ForgotPassword from './pages/ForgotPassword'
 import Onboarding from './pages/Onboarding'
 import Dashboard from './pages/Dashboard'
 import ManageRoutine from './pages/ManageRoutine'
+import Goals from './pages/Goals'
 
 export default function App() {
   return (
@@ -36,6 +37,14 @@ export default function App() {
         element={
           <ProtectedRoute>
             <ManageRoutine />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/goals"
+        element={
+          <ProtectedRoute>
+            <Goals />
           </ProtectedRoute>
         }
       />

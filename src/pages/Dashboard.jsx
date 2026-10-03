@@ -1,18 +1,17 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { collection, doc, onSnapshot } from 'firebase/firestore'
-import { db } from '../firebase'
 import { useAuth } from '../context/AuthContext'
+import { useRoutineData } from '../hooks/useRoutineData'
 import { todayInZone, weekdayOf, prettyDate } from '../utils/dates'
+import { computeStreak, bestStreak } from '../utils/stats'
 import { setDayLog } from '../services/routineService'
 
 export default function Dashboard() {
   const { user, profile, logout } = useAuth()
   const tz = profile?.timeZone
+  const { tasks, logs, ready } = useRoutineData(user.uid)
 
   const [today, setToday] = useState(() => todayInZone(tz))
-  const [tasks, setTasks] = useState([])
-  const [log, setLog] = useState(null)
 
   // notice when the date changes (midnight) while the app is open
   useEffect(() => {
@@ -20,21 +19,6 @@ export default function Dashboard() {
     const timer = setInterval(() => setToday(todayInZone(tz)), 30000)
     return () => clearInterval(timer)
   }, [tz])
-
-  // all routine tasks
-  useEffect(() => {
-    return onSnapshot(collection(db, 'users', user.uid, 'routines'), (snap) => {
-      setTasks(snap.docs.map((d) => ({ id: d.id, ...d.data() })))
-    })
-  }, [user.uid])
-
-  // today's log (a new date means a fresh, empty checklist)
-  useEffect(() => {
-    setLog(null)
-    return onSnapshot(doc(db, 'users', user.uid, 'dailyLogs', today), (snap) => {
-      setLog(snap.exists() ? snap.data() : null)
-    })
-  }, [user.uid, today])
 
   const weekday = weekdayOf(today)
 
@@ -46,11 +30,20 @@ export default function Dashboard() {
     [tasks, weekday],
   )
 
-  const doneIds = log?.doneIds || []
+  const doneIds = logs[today]?.doneIds || []
   const doneCount = todaysTasks.filter((t) => doneIds.includes(t.id)).length
   const percent = todaysTasks.length
     ? Math.round((doneCount / todaysTasks.length) * 100)
     : 0
+
+  const streak = useMemo(
+    () => computeStreak(tasks, logs, today),
+    [tasks, logs, today],
+  )
+  const best = useMemo(
+    () => bestStreak(tasks, logs, today),
+    [tasks, logs, today],
+  )
 
   async function toggle(taskId) {
     const next = doneIds.includes(taskId)
@@ -74,7 +67,24 @@ export default function Dashboard() {
         </button>
       </div>
 
-      <div className="mt-5 bg-softblush dark:bg-dark-card rounded-3xl shadow-sm p-6">
+      {ready && (
+        <div className="mt-5 grid grid-cols-2 gap-3">
+          <div className="bg-softblush dark:bg-dark-card rounded-3xl shadow-sm p-4 text-center">
+            <p className="text-3xl font-extrabold text-deepsage dark:text-sage">
+              🔥 {streak}
+            </p>
+            <p className="text-xs opacity-70">day streak</p>
+          </div>
+          <div className="bg-softblush dark:bg-dark-card rounded-3xl shadow-sm p-4 text-center">
+            <p className="text-3xl font-extrabold text-deepsage dark:text-sage">
+              🏆 {Math.max(best, streak)}
+            </p>
+            <p className="text-xs opacity-70">best streak</p>
+          </div>
+        </div>
+      )}
+
+      <div className="mt-4 bg-softblush dark:bg-dark-card rounded-3xl shadow-sm p-6">
         <div className="flex items-center justify-between">
           <h2 className="font-bold">Today's routine</h2>
           <span className="text-sm font-semibold text-deepsage dark:text-sage">
@@ -111,7 +121,9 @@ export default function Dashboard() {
                   onChange={() => toggle(t.id)}
                   className="h-5 w-5 accent-[#5E7F5E]"
                 />
-                <span className={done ? 'line-through opacity-60' : ''}>{t.name}</span>
+                <span className={done ? 'line-through opacity-60' : ''}>
+                  {t.name}
+                </span>
               </label>
             )
           })}
@@ -123,12 +135,20 @@ export default function Dashboard() {
           </p>
         )}
 
-        <Link
-          to="/routine"
-          className="mt-6 block text-center rounded-full border-2 border-sage text-deepsage dark:text-sage font-bold py-2"
-        >
-          Edit routine
-        </Link>
+        <div className="mt-6 grid grid-cols-2 gap-3">
+          <Link
+            to="/routine"
+            className="text-center rounded-full border-2 border-sage text-deepsage dark:text-sage font-bold py-2"
+          >
+            Edit routine
+          </Link>
+          <Link
+            to="/goals"
+            className="text-center rounded-full bg-blush text-charcoal font-bold py-2"
+          >
+            Goals & progress
+          </Link>
+        </div>
       </div>
     </div>
   )
