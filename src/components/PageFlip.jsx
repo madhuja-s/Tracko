@@ -14,11 +14,16 @@ const DEPTH = {
   '/routine': 3,
   '/goals': 3,
   '/settings': 3,
+  '/appearance': 3,
   '/money': 3,
   '/money/settings': 4,
   '/money/budgets': 4,
+  '/money/savings': 4,
 }
-const depthOf = (path) => DEPTH[path] ?? 2
+const depthOf = (path) => {
+  if (path.startsWith('/money/savings/')) return 5
+  return DEPTH[path] ?? 2
+}
 
 function Binding() {
   return (

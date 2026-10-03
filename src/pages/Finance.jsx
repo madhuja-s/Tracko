@@ -110,16 +110,22 @@ export default function Finance() {
 
   return (
     <div className="min-h-screen p-4 sm:p-6 max-w-xl mx-auto">
-      <div className="flex items-center justify-between">
+      <div className="flex items-start justify-between gap-3">
         <Link to="/" className="text-sm font-bold text-deepsage dark:text-sage">
           ← Back to today
         </Link>
-        <div className="flex gap-4">
+        <div className="flex flex-wrap justify-end gap-x-4 gap-y-1">
           <Link
             to="/money/budgets"
             className="text-sm font-bold text-deepsage dark:text-sage"
           >
             Budgets
+          </Link>
+          <Link
+            to="/money/savings"
+            className="text-sm font-bold text-deepsage dark:text-sage"
+          >
+            Savings
           </Link>
           <Link
             to="/money/settings"

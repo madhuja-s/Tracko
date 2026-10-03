@@ -119,7 +119,7 @@ export default function Dashboard() {
                   type="checkbox"
                   checked={done}
                   onChange={() => toggle(t.id)}
-                  className="h-5 w-5 accent-[#5E7F5E]"
+                  className="h-5 w-5"
                 />
                 <span className={done ? 'line-through opacity-60' : ''}>
                   {t.name}
@@ -151,19 +151,16 @@ export default function Dashboard() {
         </div>
 
         <Link
-          to="/settings"
-          className="mt-4 block text-center text-sm font-bold text-deepsage dark:text-sage"
-        >
-          ⏰ Reminder settings
-                  <Link
           to="/money"
           className="mt-3 block text-center rounded-full bg-sage text-charcoal font-bold py-2"
         >
           💰 Money
         </Link>
 
-        
-        </Link>
+        <div className="mt-4 flex items-center justify-center gap-6 text-sm font-bold text-deepsage dark:text-sage">
+          <Link to="/settings">⏰ Reminders</Link>
+          <Link to="/appearance">🎨 Colours</Link>
+        </div>
       </div>
     </div>
   )

@@ -3,7 +3,8 @@
 /* dark mode works when <html> has class "dark" */
 @custom-variant dark (&:where(.dark, .dark *));
 
-@theme {
+/* "static" keeps every colour variable available for the palettes below */
+@theme static {
   --color-blush: #F4C6CB;
   --color-softblush: #FBE9EB;
   --color-cream: #FFF7EC;
@@ -15,9 +16,53 @@
   --font-sans: "Nunito", ui-sans-serif, system-ui, sans-serif;
 }
 
+/* ---------- colour palettes (picked on the Colours page) ---------- */
+:root[data-palette="lavender"] {
+  --color-blush: #D6C6F0;
+  --color-softblush: #EDE6F9;
+  --color-cream: #FBF8FF;
+  --color-sage: #BAD6C8;
+  --color-deepsage: #5B4B8A;
+}
+:root[data-palette="mint"] {
+  --color-blush: #BFE0CB;
+  --color-softblush: #E6F3EA;
+  --color-cream: #F7FCF8;
+  --color-sage: #F4C9D1;
+  --color-deepsage: #3F6B50;
+}
+:root[data-palette="sky"] {
+  --color-blush: #BCD9F2;
+  --color-softblush: #E4F0FB;
+  --color-cream: #F6FAFF;
+  --color-sage: #C3E4D9;
+  --color-deepsage: #3F6E99;
+}
+:root[data-palette="peach"] {
+  --color-blush: #F9CFB5;
+  --color-softblush: #FDEADD;
+  --color-cream: #FFF8F1;
+  --color-sage: #D2E3BD;
+  --color-deepsage: #A5532F;
+}
+
 body {
   @apply bg-cream text-charcoal font-sans dark:bg-dark-bg dark:text-cream;
 }
+
+/* tick boxes follow the palette */
+input[type="checkbox"],
+input[type="radio"] {
+  accent-color: var(--color-deepsage) !important;
+}
+
+/* ---------- drawings (jar, piggy bank) follow the palette ---------- */
+.f-blush { fill: var(--color-blush); }
+.f-soft { fill: var(--color-softblush); }
+.f-cream { fill: var(--color-cream); }
+.f-deep { fill: var(--color-deepsage); }
+.f-charcoal { fill: var(--color-charcoal); }
+.s-sage { stroke: var(--color-sage); }
 
 /* ---------- notebook binding ---------- */
 .binding-hole {
@@ -86,7 +131,7 @@ body {
   background: repeating-linear-gradient(
     to bottom,
     transparent 0 31px,
-    rgba(244, 198, 203, 0.35) 31px 32px
+    color-mix(in srgb, var(--color-blush) 35%, transparent) 31px 32px
   );
 }
 
