@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 
 const LINKS = [
+  ['/vault', '🔐 Vault'],
   ['/insights', '📊 Insights'],
   ['/settings', '⏰ Reminders'],
   ['/appearance', '🎨 Colours'],

@@ -14,6 +14,7 @@ import Settings from './pages/Settings'
 import Appearance from './pages/Appearance'
 import Insights from './pages/Insights'
 import Account from './pages/Account'
+import Vault from './pages/Vault'
 import Finance from './pages/Finance'
 import FinanceSettings from './pages/FinanceSettings'
 import Budgets from './pages/Budgets'
@@ -91,6 +92,14 @@ export default function App() {
           element={
             <ProtectedRoute>
               <Account />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/vault"
+          element={
+            <ProtectedRoute>
+              <Vault />
             </ProtectedRoute>
           }
         />

@@ -6,13 +6,16 @@ import './firebase'
 import App from './App.jsx'
 import { AuthProvider } from './context/AuthContext.jsx'
 import { ThemeProvider } from './context/ThemeContext.jsx'
+import { VaultProvider } from './context/VaultContext.jsx'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <BrowserRouter>
       <AuthProvider>
         <ThemeProvider>
-          <App />
+          <VaultProvider>
+            <App />
+          </VaultProvider>
         </ThemeProvider>
       </AuthProvider>
     </BrowserRouter>
