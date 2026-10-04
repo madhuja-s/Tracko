@@ -15,14 +15,12 @@ const DEPTH = {
   '/goals': 3,
   '/settings': 3,
   '/appearance': 3,
-  '/money': 3,
-  '/money/settings': 4,
-  '/money/budgets': 4,
-  '/money/savings': 4,
 }
 const depthOf = (path) => {
-  if (path.startsWith('/money/savings/')) return 5
-  return DEPTH[path] ?? 2
+  if (path in DEPTH) return DEPTH[path]
+  // money pages: /money is 3, /money/bills is 4, /money/savings/abc is 5
+  if (path.startsWith('/money')) return 2 + path.split('/').filter(Boolean).length
+  return 2
 }
 
 function Binding() {

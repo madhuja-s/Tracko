@@ -17,6 +17,7 @@ import FinanceSettings from './pages/FinanceSettings'
 import Budgets from './pages/Budgets'
 import Savings from './pages/Savings'
 import SavingsGoal from './pages/SavingsGoal'
+import Bills from './pages/Bills'
 
 export default function App() {
   return (
@@ -112,6 +113,14 @@ export default function App() {
           element={
             <ProtectedRoute>
               <SavingsGoal />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/money/bills"
+          element={
+            <ProtectedRoute>
+              <Bills />
             </ProtectedRoute>
           }
         />

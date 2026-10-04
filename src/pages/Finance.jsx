@@ -2,6 +2,8 @@ import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { useCategories, useTransactions } from '../hooks/useFinance'
+import { useBills } from '../hooks/useBills'
+import MoneyNav from '../components/MoneyNav'
 import { todayInZone, shortDate } from '../utils/dates'
 import {
   monthStartFor,
@@ -11,6 +13,7 @@ import {
   rangeLabel,
 } from '../utils/financeMonth'
 import { money, round2 } from '../utils/money'
+import { daysUntil } from '../utils/bills'
 import { addTransaction, deleteTransaction } from '../services/financeService'
 import { inputCls, btnCls } from '../styles'
 
@@ -26,6 +29,7 @@ export default function Finance() {
 
   const { categories } = useCategories(user.uid)
   const items = useTransactions(user.uid, viewStart, viewEnd)
+  const bills = useBills(user.uid)
 
   const [type, setType] = useState('expense')
   const [amount, setAmount] = useState('')
@@ -38,6 +42,8 @@ export default function Finance() {
 
   const catList = categories.filter((c) => c.type === type)
   const chosen = catList.find((c) => c.id === categoryId) || catList[0]
+
+  const dueSoon = bills.filter((b) => daysUntil(b.nextDue, today) <= 3).length
 
   function nameOf(t) {
     return categories.find((c) => c.id === t.categoryId)?.name || t.categoryName || 'Other'
@@ -110,34 +116,23 @@ export default function Finance() {
 
   return (
     <div className="min-h-screen p-4 sm:p-6 max-w-xl mx-auto">
-      <div className="flex items-start justify-between gap-3">
-        <Link to="/" className="text-sm font-bold text-deepsage dark:text-sage">
-          ← Back to today
-        </Link>
-        <div className="flex flex-wrap justify-end gap-x-4 gap-y-1">
-          <Link
-            to="/money/budgets"
-            className="text-sm font-bold text-deepsage dark:text-sage"
-          >
-            Budgets
-          </Link>
-          <Link
-            to="/money/savings"
-            className="text-sm font-bold text-deepsage dark:text-sage"
-          >
-            Savings
-          </Link>
-          <Link
-            to="/money/settings"
-            className="text-sm font-bold text-deepsage dark:text-sage"
-          >
-            Categories & month
-          </Link>
-        </div>
-      </div>
+      <Link to="/" className="text-sm font-bold text-deepsage dark:text-sage">
+        ← Back to today
+      </Link>
       <h1 className="mt-2 text-2xl font-extrabold text-deepsage dark:text-sage">
         Money 💰
       </h1>
+
+      <MoneyNav />
+
+      {dueSoon > 0 && (
+        <Link
+          to="/money/bills"
+          className="mt-3 block rounded-2xl bg-blush px-4 py-3 text-sm font-bold text-charcoal"
+        >
+          🧾 {dueSoon} bill{dueSoon === 1 ? ' is' : 's are'} due soon or overdue. Tap to see.
+        </Link>
+      )}
 
       {/* month switcher */}
       <div className="mt-4 flex items-center justify-between">
