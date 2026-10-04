@@ -157,7 +157,8 @@ export default function Dashboard() {
           💰 Money
         </Link>
 
-        <div className="mt-4 flex items-center justify-center gap-6 text-sm font-bold text-deepsage dark:text-sage">
+        <div className="mt-4 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-sm font-bold text-deepsage dark:text-sage">
+          <Link to="/insights">📊 Insights</Link>
           <Link to="/settings">⏰ Reminders</Link>
           <Link to="/appearance">🎨 Colours</Link>
         </div>

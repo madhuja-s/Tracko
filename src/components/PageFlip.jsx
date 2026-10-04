@@ -11,16 +11,13 @@ const DEPTH = {
   '/verify': 1,
   '/onboarding': 2,
   '/': 2,
-  '/routine': 3,
-  '/goals': 3,
-  '/settings': 3,
-  '/appearance': 3,
 }
 const depthOf = (path) => {
   if (path in DEPTH) return DEPTH[path]
   // money pages: /money is 3, /money/bills is 4, /money/savings/abc is 5
   if (path.startsWith('/money')) return 2 + path.split('/').filter(Boolean).length
-  return 2
+  // every other page opens from Today
+  return 3
 }
 
 function Binding() {

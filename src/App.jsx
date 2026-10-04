@@ -12,6 +12,7 @@ import ManageRoutine from './pages/ManageRoutine'
 import Goals from './pages/Goals'
 import Settings from './pages/Settings'
 import Appearance from './pages/Appearance'
+import Insights from './pages/Insights'
 import Finance from './pages/Finance'
 import FinanceSettings from './pages/FinanceSettings'
 import Budgets from './pages/Budgets'
@@ -73,6 +74,14 @@ export default function App() {
           element={
             <ProtectedRoute>
               <Appearance />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/insights"
+          element={
+            <ProtectedRoute>
+              <Insights />
             </ProtectedRoute>
           }
         />
