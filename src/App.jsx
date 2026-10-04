@@ -13,6 +13,7 @@ import Goals from './pages/Goals'
 import Settings from './pages/Settings'
 import Appearance from './pages/Appearance'
 import Insights from './pages/Insights'
+import Account from './pages/Account'
 import Finance from './pages/Finance'
 import FinanceSettings from './pages/FinanceSettings'
 import Budgets from './pages/Budgets'
@@ -82,6 +83,14 @@ export default function App() {
           element={
             <ProtectedRoute>
               <Insights />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/account"
+          element={
+            <ProtectedRoute>
+              <Account />
             </ProtectedRoute>
           }
         />

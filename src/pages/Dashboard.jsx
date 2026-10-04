@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { useRoutineData } from '../hooks/useRoutineData'
+import QuickLinks from '../components/QuickLinks'
 import { todayInZone, weekdayOf, prettyDate } from '../utils/dates'
 import { computeStreak, bestStreak } from '../utils/stats'
 import { setDayLog } from '../services/routineService'
@@ -157,11 +158,7 @@ export default function Dashboard() {
           💰 Money
         </Link>
 
-        <div className="mt-4 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-sm font-bold text-deepsage dark:text-sage">
-          <Link to="/insights">📊 Insights</Link>
-          <Link to="/settings">⏰ Reminders</Link>
-          <Link to="/appearance">🎨 Colours</Link>
-        </div>
+        <QuickLinks />
       </div>
     </div>
   )
