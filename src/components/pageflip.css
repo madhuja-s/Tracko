@@ -1,0 +1,8 @@
+/* pages fill the space above the bottom bar, and scroll inside it */
+.page-scroll > * {
+  min-height: 100% !important;
+}
+
+.page-scroll {
+  overscroll-behavior: contain;
+}

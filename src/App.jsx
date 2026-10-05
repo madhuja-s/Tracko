@@ -8,6 +8,7 @@ import VerifyEmail from './pages/VerifyEmail'
 import ForgotPassword from './pages/ForgotPassword'
 import Onboarding from './pages/Onboarding'
 import Dashboard from './pages/Dashboard'
+import More from './pages/More'
 import ManageRoutine from './pages/ManageRoutine'
 import Goals from './pages/Goals'
 import Settings from './pages/Settings'
@@ -44,6 +45,14 @@ export default function App() {
           element={
             <ProtectedRoute>
               <Dashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/more"
+          element={
+            <ProtectedRoute>
+              <More />
             </ProtectedRoute>
           }
         />

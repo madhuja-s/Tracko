@@ -2,13 +2,12 @@ import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { useRoutineData } from '../hooks/useRoutineData'
-import QuickLinks from '../components/QuickLinks'
 import { todayInZone, weekdayOf, prettyDate } from '../utils/dates'
 import { computeStreak, bestStreak } from '../utils/stats'
 import { setDayLog } from '../services/routineService'
 
 export default function Dashboard() {
-  const { user, profile, logout } = useAuth()
+  const { user, profile } = useAuth()
   const tz = profile?.timeZone
   const { tasks, logs, ready } = useRoutineData(user.uid)
 
@@ -55,17 +54,12 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="min-h-screen p-4 sm:p-6 max-w-xl mx-auto">
-      <div className="flex items-start justify-between">
-        <div>
-          <h1 className="text-2xl font-extrabold text-deepsage dark:text-sage">
-            Hi {profile?.name || user.displayName || 'there'} 🌸
-          </h1>
-          <p className="opacity-70 text-sm">{prettyDate(today)}</p>
-        </div>
-        <button onClick={logout} className="text-sm underline opacity-70">
-          Log out
-        </button>
+    <div className="min-h-screen p-4 sm:p-6 max-w-xl mx-auto pb-8">
+      <div>
+        <h1 className="text-2xl font-extrabold text-deepsage dark:text-sage">
+          Hi {profile?.name || user.displayName || 'there'} 🌸
+        </h1>
+        <p className="opacity-70 text-sm">{prettyDate(today)}</p>
       </div>
 
       {ready && (
@@ -150,15 +144,6 @@ export default function Dashboard() {
             Goals & progress
           </Link>
         </div>
-
-        <Link
-          to="/money"
-          className="mt-3 block text-center rounded-full bg-sage text-charcoal font-bold py-2"
-        >
-          💰 Money
-        </Link>
-
-        <QuickLinks />
       </div>
     </div>
   )
