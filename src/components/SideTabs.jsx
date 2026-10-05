@@ -1,9 +1,12 @@
 import { Link, useLocation } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 
+// width of the strip on the right edge of the page
+export const TAB_STRIP = 50
+
 const HIDDEN_ON = ['/login', '/signup', '/forgot', '/verify', '/onboarding']
 
-// the bar only shows when you are logged in and set up
+// the tabs only show when you are logged in and set up
 export function useShowNav() {
   const { user, profile } = useAuth()
   const { pathname } = useLocation()
@@ -13,7 +16,7 @@ export function useShowNav() {
 }
 
 const icon = {
-  className: 'h-6 w-6',
+  className: 'h-5 w-5',
   viewBox: '0 0 24 24',
   fill: 'none',
   stroke: 'currentColor',
@@ -87,37 +90,41 @@ const TABS = [
   },
 ]
 
-export default function BottomNav() {
+// soft tints for the tabs that are tucked in, so they alternate like a real diary
+const TUCKED = ['bg-sage/45', 'bg-blush/45']
+
+export default function SideTabs() {
   const { pathname } = useLocation()
 
   return (
     <nav
       aria-label="Main"
-      className="absolute bottom-0 left-[26px] right-0 z-30 border-t border-blush/60 bg-cream/95 backdrop-blur dark:bg-dark-bg/95"
-      style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}
+      className="absolute right-0 z-30"
+      style={{ top: 56, width: TAB_STRIP }}
     >
-      <ul className="mx-auto flex h-16 max-w-md items-stretch px-1">
-        {TABS.map((t) => {
+      <ul className="flex flex-col gap-1.5">
+        {TABS.map((t, i) => {
           const active = t.match(pathname)
           return (
-            <li key={t.to} className="flex-1">
+            <li key={t.to}>
               <Link
                 to={t.to}
+                aria-label={t.label}
                 aria-current={active ? 'page' : undefined}
-                className="flex h-full flex-col items-center justify-center gap-0.5"
+                className={`flex flex-col items-center justify-center gap-2 rounded-r-2xl text-charcoal shadow-[2px_3px_6px_rgba(59,55,53,0.16)] transition-all duration-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-deepsage ${
+                  active
+                    ? 'bg-blush'
+                    : `${TUCKED[i % 2]} hover:brightness-95 dark:text-cream`
+                }`}
+                style={{
+                  width: active ? TAB_STRIP : 36,
+                  height: 'clamp(72px, 11dvh, 96px)',
+                }}
               >
+                {t.svg}
                 <span
-                  className={`flex h-8 w-14 items-center justify-center rounded-full transition ${
-                    active
-                      ? 'bg-blush text-charcoal'
-                      : 'text-charcoal/60 dark:text-cream/60'
-                  }`}
-                >
-                  {t.svg}
-                </span>
-                <span
-                  className={`text-[11px] font-bold ${
-                    active ? 'text-deepsage dark:text-sage' : 'opacity-70'
+                  className={`text-[11px] tracking-wide [writing-mode:vertical-rl] ${
+                    active ? 'font-extrabold' : 'font-bold'
                   }`}
                 >
                   {t.label}

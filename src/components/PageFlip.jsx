@@ -1,10 +1,9 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { Routes, useLocation } from 'react-router-dom'
-import BottomNav, { useShowNav } from './BottomNav'
+import SideTabs, { TAB_STRIP, useShowNav } from './SideTabs'
 import './pageflip.css'
 
 const FLIP_MS = 600
-const NAV_SPACE = 'calc(64px + env(safe-area-inset-bottom, 0px))'
 
 // deeper pages flip forward, going back flips backward
 const DEPTH = {
@@ -24,7 +23,7 @@ const depthOf = (path) => {
   return 3
 }
 
-// moving between the bottom tabs flips left to right, in tab order
+// moving between the tabs flips in tab order, top to bottom
 const TAB_ORDER = { '/': 0, '/money': 1, '/insights': 2, '/vault': 3, '/more': 4 }
 function directionFor(fromPath, toPath) {
   if (fromPath in TAB_ORDER && toPath in TAB_ORDER) {
@@ -81,17 +80,24 @@ export default function PageFlip({ children }) {
   const baseLoc = animating ? (fwd ? state.to : state.from) : location
   const leafLoc = animating ? (fwd ? state.from : state.to) : null
 
-  // pages scroll above the bottom bar
-  const scrollStyle = { bottom: showNav ? NAV_SPACE : 0 }
-
   return (
     <div className="h-dvh bg-softblush dark:bg-dark-bg">
       <div className="relative mx-auto h-full max-w-[560px] overflow-hidden bg-cream dark:bg-dark-bg shadow-xl">
-        <div className="absolute inset-y-0 left-[26px] right-0" style={{ perspective: '1500px' }}>
+        {/* the strip the tabs stick out from */}
+        {showNav && (
           <div
-            className="page-scroll absolute inset-x-0 top-0 overflow-y-auto"
-            style={scrollStyle}
-          >
+            className="absolute inset-y-0 right-0 bg-softblush dark:bg-dark-card"
+            style={{ width: TAB_STRIP }}
+          />
+        )}
+
+        <div
+          className={`absolute inset-y-0 left-[26px] ${
+            showNav ? 'shadow-[3px_0_8px_rgba(59,55,53,0.14)]' : ''
+          }`}
+          style={{ right: showNav ? TAB_STRIP : 0, perspective: '1500px' }}
+        >
+          <div className="page-scroll absolute inset-0 overflow-y-auto bg-cream dark:bg-dark-bg">
             <Routes location={baseLoc}>{children}</Routes>
           </div>
 
@@ -101,10 +107,7 @@ export default function PageFlip({ children }) {
               style={{ pointerEvents: 'none' }}
             >
               <div className="face">
-                <div
-                  className="page-scroll absolute inset-x-0 top-0 overflow-y-auto"
-                  style={scrollStyle}
-                >
+                <div className="page-scroll absolute inset-0 overflow-y-auto">
                   <Routes location={leafLoc}>{children}</Routes>
                 </div>
                 <div className="shade-front" />
@@ -118,7 +121,7 @@ export default function PageFlip({ children }) {
         </div>
 
         <Binding />
-        {showNav && <BottomNav />}
+        {showNav && <SideTabs />}
       </div>
     </div>
   )

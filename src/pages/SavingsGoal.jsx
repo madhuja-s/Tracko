@@ -159,8 +159,8 @@ export default function SavingsGoal() {
       </div>
 
       {/* jar and log */}
-      <div className="mt-4 grid grid-cols-[130px_1fr] gap-3">
-        <div className="rounded-3xl bg-softblush/60 dark:bg-dark-card p-2">
+           <div className="mt-4 grid grid-cols-1 gap-3 min-[460px]:grid-cols-[130px_1fr]">
+                <div className="mx-auto w-[150px] rounded-3xl bg-softblush/60 dark:bg-dark-card p-2 min-[460px]:w-auto">
           <SavingsJar percent={shownPct} />
         </div>
 
