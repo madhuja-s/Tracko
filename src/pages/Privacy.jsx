@@ -82,7 +82,7 @@ export default function Privacy() {
         <section className="bg-softblush dark:bg-dark-card rounded-3xl shadow-sm p-6">
           <h2 className="font-bold">Questions?</h2>
           <p className="mt-2 text-sm opacity-90">
-            Write to <b>madhujasuryawanshi29@gmail.com</b>.
+            Write to <b>trackoroutineandmoneytracker@gmail.com</b>.
           </p>
         </section>
       </div>

@@ -37,11 +37,26 @@ export default function Signup() {
 
     setBusy(true)
     try {
-      const cred = await createUserWithEmailAndPassword(auth, email, password)
-      await updateProfile(cred.user, { displayName: name.trim() })
-      await createUserProfile(cred.user, { name: name.trim(), age: ageNum })
-      await sendEmailVerification(cred.user)
-      navigate('/verify')
+      const cred = await createUserWithEmailAndPassword(auth, email.trim(), password)
+
+      // send the email first, so nothing later can stop it
+      let sendFailed = false
+      try {
+        await sendEmailVerification(cred.user)
+      } catch (err) {
+        console.error('Could not send the verification email:', err)
+        sendFailed = true
+      }
+
+      // the profile can be finished later if this step fails
+      try {
+        await updateProfile(cred.user, { displayName: name.trim() })
+        await createUserProfile(cred.user, { name: name.trim(), age: ageNum })
+      } catch (err) {
+        console.error('Could not save the profile yet:', err)
+      }
+
+      navigate('/verify', { state: { sendFailed } })
     } catch (err) {
       setError(friendlyError(err))
     } finally {
