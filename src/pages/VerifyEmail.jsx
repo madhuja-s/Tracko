@@ -5,7 +5,7 @@ import { doc, deleteDoc } from 'firebase/firestore'
 import { auth, db } from '../firebase'
 import { useAuth } from '../context/AuthContext'
 import { ensureProfile } from '../services/userService'
-import AuthLayout from '/components/AuthLayout'
+import AuthLayout from '../components/AuthLayout'
 import { btnCls, btnOutlineCls } from '../styles'
 
 // true once the email is verified. also makes sure the profile exists
