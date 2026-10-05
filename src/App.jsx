@@ -6,6 +6,7 @@ import Login from './pages/Login'
 import Signup from './pages/Signup'
 import VerifyEmail from './pages/VerifyEmail'
 import ForgotPassword from './pages/ForgotPassword'
+import Privacy from './pages/Privacy'
 import Onboarding from './pages/Onboarding'
 import Dashboard from './pages/Dashboard'
 import More from './pages/More'
@@ -32,6 +33,7 @@ export default function App() {
         <Route path="/signup" element={<Signup />} />
         <Route path="/forgot" element={<ForgotPassword />} />
         <Route path="/verify" element={<VerifyEmail />} />
+        <Route path="/privacy" element={<Privacy />} />
         <Route
           path="/onboarding"
           element={

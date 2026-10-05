@@ -13,7 +13,8 @@ const DEPTH = {
   '/verify': 1,
   '/onboarding': 2,
   '/': 2,
-  '/more': 2,
+   '/more': 2,
+  '/privacy': 4,
 }
 const depthOf = (path) => {
   if (path in DEPTH) return DEPTH[path]

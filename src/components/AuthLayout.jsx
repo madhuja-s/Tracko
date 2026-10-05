@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom'
+
 export default function AuthLayout({ title, subtitle, children }) {
   return (
     <div className="min-h-screen flex items-center justify-center p-4">
@@ -13,6 +15,12 @@ export default function AuthLayout({ title, subtitle, children }) {
         </h1>
         {subtitle && <p className="mt-1 mb-6 opacity-80">{subtitle}</p>}
         {children}
+
+        <p className="mt-6 text-center text-xs opacity-70">
+          <Link to="/privacy" className="font-bold underline">
+            Privacy
+          </Link>
+        </p>
       </div>
     </div>
   )
