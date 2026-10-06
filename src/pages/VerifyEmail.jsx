@@ -8,20 +8,6 @@ import { ensureProfile } from '../services/userService'
 import AuthLayout from '../components/AuthLayout'
 import { btnCls, btnOutlineCls } from '../styles'
 
-// true once the email is verified. also makes sure the profile exists
-async function refreshAndCheck() {
-  const u = auth.currentUser
-  if (!u) return false
-  await u.reload()
-  if (!u.emailVerified) return false
-  try {
-    await ensureProfile(u)
-  } catch (err) {
-    console.error(err)
-  }
-  return true
-}
-
 function sendErrorText(err) {
   const code = err?.code || ''
   if (code === 'auth/too-many-requests') {
@@ -40,7 +26,7 @@ const MSG_STYLE = {
 }
 
 export default function VerifyEmail() {
-  const { user, loading, logout } = useAuth()
+  const { user, loading, logout, refreshUser } = useAuth()
   const navigate = useNavigate()
   const location = useLocation()
 
@@ -68,7 +54,7 @@ export default function VerifyEmail() {
 
     let cancelled = false
     const check = () => {
-      refreshAndCheck()
+      refreshUser(ensureProfile)
         .then((ok) => {
           if (ok && !cancelled) navigate('/', { replace: true })
         })
@@ -82,7 +68,7 @@ export default function VerifyEmail() {
       clearInterval(id)
       window.removeEventListener('focus', check)
     }
-  }, [user, navigate])
+  }, [user, navigate, refreshUser])
 
   if (loading) return null
   if (!user) return <Navigate to="/login" replace />
@@ -92,7 +78,7 @@ export default function VerifyEmail() {
     setBusy(true)
     setMsg(null)
     try {
-      const ok = await refreshAndCheck()
+      const ok = await refreshUser(ensureProfile)
       if (ok) return navigate('/', { replace: true })
       setMsg({
         kind: 'info',
@@ -159,7 +145,7 @@ export default function VerifyEmail() {
           <p className="font-bold">Can't find it?</p>
           <ul className="mt-1 list-disc space-y-0.5 pl-5 opacity-90">
             <li>Check <b>Spam</b>, <b>Junk</b> and <b>Promotions</b>.</li>
-            <li>Look for a sender that starts with <b>noreply</b>.</li>
+            <li>Look for a sender that starts with <b>tracko</b>.</li>
             <li>College and work emails often block it. A Gmail address works best.</li>
           </ul>
         </div>

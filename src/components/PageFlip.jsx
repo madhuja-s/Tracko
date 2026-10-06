@@ -4,6 +4,10 @@ import SideTabs, { TAB_STRIP, useShowNav } from './SideTabs'
 import './pageflip.css'
 
 const FLIP_MS = 600
+// a page shown for less than this long was just a redirect, so no flip
+const QUICK_HOP_MS = 400
+// never flip away from these pages (they only show a redirect after finishing)
+const NO_FLIP_FROM = ['/verify']
 
 // deeper pages flip forward, going back flips backward
 const DEPTH = {
@@ -13,7 +17,7 @@ const DEPTH = {
   '/verify': 1,
   '/onboarding': 2,
   '/': 2,
-   '/more': 2,
+  '/more': 2,
   '/privacy': 4,
 }
 const depthOf = (path) => {
@@ -53,6 +57,7 @@ export default function PageFlip({ children }) {
   const location = useLocation()
   const showNav = useShowNav()
   const prev = useRef(location)
+  const shownAt = useRef(Date.now())
   const timer = useRef(null)
   const [state, setState] = useState({ from: null, to: location, dir: 'fwd' })
 
@@ -61,6 +66,18 @@ export default function PageFlip({ children }) {
 
     const from = prev.current
     prev.current = location
+
+    const now = Date.now()
+    const quickHop = now - shownAt.current < QUICK_HOP_MS
+    shownAt.current = now
+
+    // redirect hops and the verify page: just show the new page, no flip
+    if (quickHop || NO_FLIP_FROM.includes(from.pathname)) {
+      clearTimeout(timer.current)
+      setState({ from: null, to: location, dir: 'fwd' })
+      return
+    }
+
     const dir = directionFor(from.pathname, location.pathname)
 
     setState({ from, to: location, dir })
@@ -104,6 +121,7 @@ export default function PageFlip({ children }) {
 
           {animating && (
             <div
+              key={state.to.key}
               className={`leaf ${fwd ? 'leaf-fwd' : 'leaf-back'}`}
               style={{ pointerEvents: 'none' }}
             >
