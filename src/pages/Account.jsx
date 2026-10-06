@@ -29,7 +29,7 @@ function deleteErrorText(err) {
   if (code === 'auth/requires-recent-login') {
     return 'For safety, please log out, log in again, and then retry.'
   }
-  return 'Something went wrong. Some of your data may already be removed. Please try again to finish.'
+  return `Failed at: ${err?.step || 'unknown step'} (${code || 'no code'}). Please send this to your developer.`
 }
 
 function DeleteAccount() {
