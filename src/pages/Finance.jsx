@@ -184,7 +184,7 @@ export default function Finance() {
         <button
           aria-label="Previous month"
           onClick={() => setViewStart(prevMonthStart(viewStart))}
-          className="h-11 w-11 rounded-full bg-softblush dark:bg-dark-card text-xl font-bold"
+          className="h-11 w-11 shrink-0 rounded-full bg-softblush dark:bg-dark-card text-xl font-bold"
         >
           ‹
         </button>
@@ -196,28 +196,28 @@ export default function Finance() {
           aria-label="Next month"
           disabled={isCurrent}
           onClick={() => setViewStart(nextMonthStart(viewStart))}
-          className="h-11 w-11 rounded-full bg-softblush dark:bg-dark-card text-xl font-bold disabled:opacity-30"
+          className="h-11 w-11 shrink-0 rounded-full bg-softblush dark:bg-dark-card text-xl font-bold disabled:opacity-30"
         >
           ›
         </button>
       </div>
 
-      {/* totals */}
-      <div className="mt-4 grid grid-cols-3 gap-3">
-        <div className="bg-softblush dark:bg-dark-card rounded-3xl shadow-sm p-4 text-center">
-          <p className="text-xs opacity-70">Income</p>
-          <p className="mt-1 font-extrabold text-deepsage dark:text-sage">
+      {/* totals: stacked rows on phones, three boxes on bigger screens */}
+      <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-3">
+        <div className="flex items-center justify-between gap-3 rounded-3xl bg-softblush px-5 py-3 shadow-sm dark:bg-dark-card sm:block sm:p-4 sm:text-center">
+          <p className="text-sm opacity-70 sm:text-xs">Income</p>
+          <p className="font-extrabold text-deepsage dark:text-sage sm:mt-1">
             {money(totals.income)}
           </p>
         </div>
-        <div className="bg-softblush dark:bg-dark-card rounded-3xl shadow-sm p-4 text-center">
-          <p className="text-xs opacity-70">Spent</p>
-          <p className="mt-1 font-extrabold">{money(totals.spent)}</p>
+        <div className="flex items-center justify-between gap-3 rounded-3xl bg-softblush px-5 py-3 shadow-sm dark:bg-dark-card sm:block sm:p-4 sm:text-center">
+          <p className="text-sm opacity-70 sm:text-xs">Spent</p>
+          <p className="font-extrabold sm:mt-1">{money(totals.spent)}</p>
         </div>
-        <div className="bg-softblush dark:bg-dark-card rounded-3xl shadow-sm p-4 text-center">
-          <p className="text-xs opacity-70">Balance</p>
+        <div className="flex items-center justify-between gap-3 rounded-3xl bg-softblush px-5 py-3 shadow-sm dark:bg-dark-card sm:block sm:p-4 sm:text-center">
+          <p className="text-sm opacity-70 sm:text-xs">Balance</p>
           <p
-            className={`mt-1 font-extrabold ${
+            className={`font-extrabold sm:mt-1 ${
               totals.balance < 0 ? 'text-red-600' : 'text-deepsage dark:text-sage'
             }`}
           >
@@ -230,7 +230,7 @@ export default function Finance() {
       <form
         ref={formRef}
         onSubmit={handleSubmit}
-        className={`mt-4 bg-softblush dark:bg-dark-card rounded-3xl shadow-sm p-6 space-y-3 ${
+        className={`mt-4 bg-softblush dark:bg-dark-card rounded-3xl shadow-sm p-5 sm:p-6 space-y-3 ${
           editingId ? 'ring-2 ring-blush' : ''
         }`}
       >
@@ -337,14 +337,14 @@ export default function Finance() {
 
       {/* where the money went */}
       {byCategory.length > 0 && (
-        <div className="mt-4 bg-softblush dark:bg-dark-card rounded-3xl shadow-sm p-6">
+        <div className="mt-4 bg-softblush dark:bg-dark-card rounded-3xl shadow-sm p-5 sm:p-6">
           <h2 className="font-bold">Where your money went</h2>
           <div className="mt-3 space-y-3">
             {byCategory.map((c) => (
               <div key={c.name}>
-                <div className="flex justify-between text-sm">
-                  <span className="font-semibold">{c.name}</span>
-                  <span>{money(c.total)}</span>
+                <div className="flex justify-between gap-3 text-sm">
+                  <span className="min-w-0 truncate font-semibold">{c.name}</span>
+                  <span className="shrink-0">{money(c.total)}</span>
                 </div>
                 <div className="mt-1 h-2 rounded-full bg-white/70 dark:bg-dark-bg overflow-hidden">
                   <div
@@ -369,7 +369,7 @@ export default function Finance() {
           return (
             <div
               key={t.id}
-              className={`flex items-center gap-3 rounded-2xl bg-softblush dark:bg-dark-card px-4 py-3 ${
+              className={`flex items-center gap-2 rounded-2xl bg-softblush dark:bg-dark-card px-4 py-3 ${
                 editingId === t.id ? 'ring-2 ring-blush' : ''
               }`}
             >
@@ -381,7 +381,9 @@ export default function Finance() {
                 </p>
               </div>
               <p
-                className={`font-bold ${income ? 'text-deepsage dark:text-sage' : ''}`}
+                className={`shrink-0 whitespace-nowrap text-sm font-bold sm:text-base ${
+                  income ? 'text-deepsage dark:text-sage' : ''
+                }`}
               >
                 {income ? '+' : '−'}
                 {money(t.amount)}
@@ -389,14 +391,14 @@ export default function Finance() {
               <button
                 onClick={() => startEdit(t)}
                 aria-label="Edit entry"
-                className="px-2 text-sm font-bold text-deepsage dark:text-sage"
+                className="shrink-0 px-1.5 text-sm font-bold text-deepsage dark:text-sage"
               >
                 ✎
               </button>
               <button
                 onClick={() => handleDelete(t)}
                 aria-label="Delete entry"
-                className="px-1 text-sm font-bold text-red-600"
+                className="shrink-0 px-1 text-sm font-bold text-red-600"
               >
                 ✕
               </button>

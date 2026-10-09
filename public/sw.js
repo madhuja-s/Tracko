@@ -1,10 +1,10 @@
-const CACHE = 'tracko-v1'
+const CACHE = 'tracko-v2'
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches
       .open(CACHE)
-      .then((cache) => cache.add('/'))
+      .then((cache) => cache.add(new Request('/', { cache: 'reload' })))
       .catch(() => {})
       .then(() => self.skipWaiting()),
   )
@@ -28,7 +28,8 @@ self.addEventListener('fetch', (event) => {
   if (url.origin !== self.location.origin) return
 
   event.respondWith(
-    fetch(req)
+    // always ask the server first, never trust the browser's saved copy
+    fetch(req, { cache: 'no-cache' })
       .then((res) => {
         if (res.ok) {
           const copy = res.clone()

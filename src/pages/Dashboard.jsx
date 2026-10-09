@@ -79,10 +79,10 @@ export default function Dashboard() {
         </div>
       )}
 
-      <div className="mt-4 bg-softblush dark:bg-dark-card rounded-3xl shadow-sm p-6">
-        <div className="flex items-center justify-between">
+      <div className="mt-4 bg-softblush dark:bg-dark-card rounded-3xl shadow-sm p-5 sm:p-6">
+        <div className="flex items-center justify-between gap-2">
           <h2 className="font-bold">Today's routine</h2>
-          <span className="text-sm font-semibold text-deepsage dark:text-sage">
+          <span className="shrink-0 text-sm font-semibold text-deepsage dark:text-sage">
             {doneCount}/{todaysTasks.length} done
           </span>
         </div>
@@ -114,9 +114,11 @@ export default function Dashboard() {
                   type="checkbox"
                   checked={done}
                   onChange={() => toggle(t.id)}
-                  className="h-5 w-5"
+                  className="h-5 w-5 shrink-0"
                 />
-                <span className={done ? 'line-through opacity-60' : ''}>
+                <span
+                  className={`min-w-0 leading-snug ${done ? 'line-through opacity-60' : ''}`}
+                >
                   {t.name}
                 </span>
               </label>
@@ -133,13 +135,13 @@ export default function Dashboard() {
         <div className="mt-6 grid grid-cols-2 gap-3">
           <Link
             to="/routine"
-            className="text-center rounded-full border-2 border-sage text-deepsage dark:text-sage font-bold py-2"
+            className="flex min-h-[48px] items-center justify-center rounded-full border-2 border-sage px-3 py-2 text-center text-sm font-bold leading-tight text-deepsage dark:text-sage"
           >
             Edit routine
           </Link>
           <Link
             to="/goals"
-            className="text-center rounded-full bg-blush text-charcoal font-bold py-2"
+            className="flex min-h-[48px] items-center justify-center rounded-full bg-blush px-3 py-2 text-center text-sm font-bold leading-tight text-charcoal"
           >
             Goals & progress
           </Link>

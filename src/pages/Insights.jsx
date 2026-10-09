@@ -19,7 +19,7 @@ import {
 import { money, round2 } from '../utils/money'
 import { BarChart, GroupedBars, Heatmap } from '../components/Charts'
 
-const card = 'bg-softblush dark:bg-dark-card rounded-3xl shadow-sm p-6'
+const card = 'bg-softblush dark:bg-dark-card rounded-3xl shadow-sm p-5 sm:p-6'
 
 function RoutineInsights({ uid, tz }) {
   const today = todayInZone(tz)
@@ -237,23 +237,30 @@ function MoneyInsights({ uid, profile }) {
           ariaLabel="Bar chart comparing income and spending for the last 6 months"
         />
         <div className="mt-4 space-y-1.5">
-          {[...months].reverse().map((m) => (
-            <div
-              key={m.start}
-              className="flex items-center justify-between rounded-xl bg-white/50 dark:bg-dark-bg px-3 py-2 text-xs"
-            >
-              <span className="font-bold">{m.label}</span>
-              <span>In {money(m.income)}</span>
-              <span>Out {money(m.spent)}</span>
-              <span
-                className={`font-bold ${
-                  m.income - m.spent < 0 ? 'text-red-600' : 'text-deepsage dark:text-sage'
-                }`}
+          {[...months].reverse().map((m) => {
+            const net = round2(m.income - m.spent)
+            return (
+              <div
+                key={m.start}
+                className="rounded-xl bg-white/50 dark:bg-dark-bg px-3 py-2 text-xs"
               >
-                {money(round2(m.income - m.spent))}
-              </span>
-            </div>
-          ))}
+                <div className="flex items-center justify-between gap-3">
+                  <span className="font-bold">{m.label}</span>
+                  <span
+                    className={`font-bold ${
+                      net < 0 ? 'text-red-600' : 'text-deepsage dark:text-sage'
+                    }`}
+                  >
+                    {money(net)}
+                  </span>
+                </div>
+                <div className="mt-1 flex flex-wrap justify-between gap-x-3 gap-y-0.5 opacity-80">
+                  <span>In {money(m.income)}</span>
+                  <span>Out {money(m.spent)}</span>
+                </div>
+              </div>
+            )
+          })}
         </div>
       </div>
 
@@ -276,7 +283,7 @@ function MoneyInsights({ uid, profile }) {
           <p className="mt-1 text-sm opacity-70">No savings goals yet.</p>
         ) : (
           <>
-            <div className="mt-3 flex justify-between text-sm">
+            <div className="mt-3 flex justify-between gap-3 text-sm">
               <span className="font-semibold">{money(savedTotal)} saved</span>
               <span className="opacity-70">of {money(targetTotal)}</span>
             </div>
