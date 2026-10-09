@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { useCategories, useTransactions } from '../hooks/useFinance'
@@ -14,8 +14,12 @@ import {
 } from '../utils/financeMonth'
 import { money, round2 } from '../utils/money'
 import { daysUntil } from '../utils/bills'
-import { addTransaction, deleteTransaction } from '../services/financeService'
-import { inputCls, btnCls } from '../styles'
+import {
+  addTransaction,
+  updateTransaction,
+  deleteTransaction,
+} from '../services/financeService'
+import { inputCls, btnCls, btnOutlineCls } from '../styles'
 
 export default function Finance() {
   const { user, profile } = useAuth()
@@ -30,6 +34,9 @@ export default function Finance() {
   const { categories } = useCategories(user.uid)
   const items = useTransactions(user.uid, viewStart, viewEnd)
   const bills = useBills(user.uid)
+
+  const formRef = useRef(null)
+  const [editingId, setEditingId] = useState(null)
 
   const [type, setType] = useState('expense')
   const [amount, setAmount] = useState('')
@@ -73,7 +80,36 @@ export default function Finance() {
       .sort((a, b) => b.total - a.total)
   }, [items, categories])
 
-  async function handleAdd(e) {
+  function resetForm() {
+    setEditingId(null)
+    setAmount('')
+    setNote('')
+    setDate(today)
+    setCategoryId('')
+  }
+
+  function startEdit(t) {
+    setError('')
+    setMsg('')
+    setEditingId(t.id)
+    setType(t.type)
+    setAmount(String(t.amount))
+    setCategoryId(t.categoryId)
+    setDate(t.date)
+    setNote(t.note || '')
+    // bring the form into view
+    setTimeout(() => {
+      formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }, 50)
+  }
+
+  function cancelEdit() {
+    resetForm()
+    setError('')
+    setMsg('')
+  }
+
+  async function handleSubmit(e) {
     e.preventDefault()
     setError('')
     setMsg('')
@@ -85,20 +121,28 @@ export default function Finance() {
     if (!chosen) return setError('Pick a category.')
     if (!date) return setError('Pick a date.')
 
+    const data = {
+      type,
+      amount: round2(value),
+      categoryId: chosen.id,
+      categoryName: chosen.name,
+      date,
+      note,
+    }
+
     setBusy(true)
     try {
-      await addTransaction(user.uid, {
-        type,
-        amount: round2(value),
-        categoryId: chosen.id,
-        categoryName: chosen.name,
-        date,
-        note,
-      })
-      setAmount('')
-      setNote('')
-      const inView = date >= viewStart && date <= viewEnd
-      setMsg(inView ? 'Added ✓' : 'Added ✓ (it belongs to a different month)')
+      if (editingId) {
+        await updateTransaction(user.uid, editingId, data)
+        resetForm()
+        setMsg('Changes saved ✓')
+      } else {
+        await addTransaction(user.uid, data)
+        setAmount('')
+        setNote('')
+        const inView = date >= viewStart && date <= viewEnd
+        setMsg(inView ? 'Added ✓' : 'Added ✓ (it belongs to a different month)')
+      }
     } catch (err) {
       console.error(err)
       setError('Could not save. Please try again.')
@@ -109,6 +153,7 @@ export default function Finance() {
   async function handleDelete(t) {
     if (window.confirm(`Delete this ${money(t.amount)} entry?`)) {
       await deleteTransaction(user.uid, t.id)
+      if (editingId === t.id) resetForm()
     }
   }
 
@@ -181,12 +226,15 @@ export default function Finance() {
         </div>
       </div>
 
-      {/* add form */}
+      {/* add / edit form */}
       <form
-        onSubmit={handleAdd}
-        className="mt-4 bg-softblush dark:bg-dark-card rounded-3xl shadow-sm p-6 space-y-3"
+        ref={formRef}
+        onSubmit={handleSubmit}
+        className={`mt-4 bg-softblush dark:bg-dark-card rounded-3xl shadow-sm p-6 space-y-3 ${
+          editingId ? 'ring-2 ring-blush' : ''
+        }`}
       >
-        <h2 className="font-bold">Add an entry</h2>
+        <h2 className="font-bold">{editingId ? 'Edit this entry ✏️' : 'Add an entry'}</h2>
 
         <div className="flex gap-2">
           {['expense', 'income'].map((tp) => (
@@ -271,9 +319,20 @@ export default function Finance() {
         {msg && (
           <p className="text-sm font-semibold text-deepsage dark:text-sage">{msg}</p>
         )}
+
         <button className={btnCls} disabled={busy}>
-          {busy ? 'Saving...' : 'Add entry'}
+          {busy ? 'Saving...' : editingId ? 'Save changes' : 'Add entry'}
         </button>
+        {editingId && (
+          <button
+            type="button"
+            className={btnOutlineCls}
+            onClick={cancelEdit}
+            disabled={busy}
+          >
+            Cancel
+          </button>
+        )}
       </form>
 
       {/* where the money went */}
@@ -310,7 +369,9 @@ export default function Finance() {
           return (
             <div
               key={t.id}
-              className="flex items-center gap-3 rounded-2xl bg-softblush dark:bg-dark-card px-4 py-3"
+              className={`flex items-center gap-3 rounded-2xl bg-softblush dark:bg-dark-card px-4 py-3 ${
+                editingId === t.id ? 'ring-2 ring-blush' : ''
+              }`}
             >
               <div className="min-w-0 flex-1">
                 <p className="font-semibold truncate">{nameOf(t)}</p>
@@ -326,9 +387,16 @@ export default function Finance() {
                 {money(t.amount)}
               </p>
               <button
+                onClick={() => startEdit(t)}
+                aria-label="Edit entry"
+                className="px-2 text-sm font-bold text-deepsage dark:text-sage"
+              >
+                ✎
+              </button>
+              <button
                 onClick={() => handleDelete(t)}
                 aria-label="Delete entry"
-                className="px-2 text-sm font-bold text-red-600"
+                className="px-1 text-sm font-bold text-red-600"
               >
                 ✕
               </button>

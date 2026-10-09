@@ -68,6 +68,22 @@ export async function addTransaction(
   })
 }
 
+// changes an existing entry (createdAt and billId stay as they were)
+export async function updateTransaction(
+  uid,
+  id,
+  { type, amount, categoryId, categoryName, date, note },
+) {
+  await updateDoc(doc(db, 'users', uid, 'transactions', id), {
+    type,
+    amount,
+    categoryId,
+    categoryName,
+    date,
+    note: note.trim(),
+  })
+}
+
 export async function deleteTransaction(uid, id) {
   await deleteDoc(doc(db, 'users', uid, 'transactions', id))
 }
