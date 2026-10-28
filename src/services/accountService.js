@@ -4,7 +4,10 @@ import {
   reauthenticateWithCredential,
   reauthenticateWithPopup,
   EmailAuthProvider,
+  GoogleAuthProvider,
 } from 'firebase/auth'
+import { Capacitor } from '@capacitor/core'
+import { FirebaseAuthentication } from '@capacitor-firebase/authentication'
 import { auth, db, googleProvider } from '../firebase'
 
 // collections that can be listed and deleted (the vault setup doc is handled separately)
@@ -77,13 +80,19 @@ function clearLocalSettings(uid) {
   }
 }
 
-// asks for your password (or Google sign-in) again, as Firebase requires
+  // asks for your password (or Google sign-in) again, as Firebase requires
 async function reauthenticate(user, password) {
   const usesPassword = user.providerData.some((p) => p.providerId === 'password')
   if (usesPassword) {
     const credential = EmailAuthProvider.credential(user.email, password)
     await reauthenticateWithCredential(user, credential)
+  } else if (Capacitor.isNativePlatform()) {
+    // inside the Android app: use the phone's own Google sign-in
+    const result = await FirebaseAuthentication.signInWithGoogle()
+    const credential = GoogleAuthProvider.credential(result.credential?.idToken)
+    await reauthenticateWithCredential(user, credential)
   } else {
+    // on the website: keep the popup
     await reauthenticateWithPopup(user, googleProvider)
   }
 }
@@ -94,4 +103,13 @@ export async function deleteAccount(user, password) {
   await wipeUserData(uid)
   clearLocalSettings(uid)
   await step('deleting the login', () => deleteUser(auth.currentUser))
+
+  // clear the phone's Google session too, so the next login asks for an account again
+  if (Capacitor.isNativePlatform()) {
+    try {
+      await FirebaseAuthentication.signOut()
+    } catch {
+      // nothing to sign out of
+    }
+  }
 }

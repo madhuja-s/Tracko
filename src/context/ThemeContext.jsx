@@ -1,3 +1,4 @@
+import { syncWidgetTheme } from '../utils/widgetSync'
 import { createContext, useContext, useEffect, useState } from 'react'
 import { doc, updateDoc } from 'firebase/firestore'
 import { db } from '../firebase'
@@ -68,6 +69,7 @@ export function ThemeProvider({ children }) {
   const dark = mode === 'dark' || (mode === 'system' && systemDark)
 
   // apply to the page
+  // apply to the page
   useEffect(() => {
     const root = document.documentElement
     root.dataset.palette = palette
@@ -76,6 +78,14 @@ export function ThemeProvider({ children }) {
     const meta = document.querySelector('meta[name="theme-color"]')
     const current = PALETTES.find((p) => p.id === palette)
     if (meta && current) meta.setAttribute('content', dark ? '#1E1B1C' : current.colors[0])
+
+    // keep the phone widget in the same colours as the app
+    if (current) {
+      syncWidgetTheme({
+        bg: dark ? '#2A2627' : current.colors[0],
+        text: dark ? '#FFF7EC' : '#3B3735',
+      })
+    }
   }, [palette, dark])
 
   function save(fields) {
