@@ -20,6 +20,8 @@ export function dayStat(tasks, logs, date) {
 }
 
 // current streak: days in a row with every task done
+import { useEffect } from 'react'
+import { syncWidget } from '../utils/widgetSync'
 export function computeStreak(tasks, logs, today) {
   let streak = 0
   for (let i = 0; i < 366; i++) {

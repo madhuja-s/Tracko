@@ -1,3 +1,4 @@
+
 import { Route, Navigate } from 'react-router-dom'
 import PageFlip from './components/PageFlip'
 import ReminderWatcher from './components/ReminderWatcher'
@@ -23,7 +24,6 @@ import Budgets from './pages/Budgets'
 import Savings from './pages/Savings'
 import SavingsGoal from './pages/SavingsGoal'
 import Bills from './pages/Bills'
-
 export default function App() {
   return (
     <>

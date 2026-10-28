@@ -1,0 +1,11 @@
+{
+  "appId": "com.madhuja.tracko",
+  "appName": "Tracko",
+  "webDir": "dist",
+  "plugins": {
+  "FirebaseAuthentication": {
+    "skipNativeAuth": true,
+    "providers": ["google.com"]
+  }
+}
+}

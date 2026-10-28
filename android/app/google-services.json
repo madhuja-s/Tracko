@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "301786597167",
+    "project_id": "routine-money-tracker",
+    "storage_bucket": "routine-money-tracker.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:301786597167:android:a45b141f8551dc3d8dc3da",
+        "android_client_info": {
+          "package_name": "com.madhuja.tracko"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "301786597167-hh481ijckbjlc77bp8pkulcp1stl5ik8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDygDp69StBKXMU15fLqKt4-GJPoQyLa2o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "301786597167-hh481ijckbjlc77bp8pkulcp1stl5ik8.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

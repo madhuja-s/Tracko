@@ -5,6 +5,7 @@ import { useRoutineData } from '../hooks/useRoutineData'
 import { todayInZone, weekdayOf, prettyDate } from '../utils/dates'
 import { computeStreak, bestStreak } from '../utils/stats'
 import { setDayLog } from '../services/routineService'
+import { syncWidget } from '../utils/widgetSync'
 
 export default function Dashboard() {
   const { user, profile } = useAuth()
@@ -44,6 +45,16 @@ export default function Dashboard() {
     () => bestStreak(tasks, logs, today),
     [tasks, logs, today],
   )
+
+  // send the real streak to the phone widget (only once the data has loaded)
+  useEffect(() => {
+    if (!ready) return
+    syncWidget({
+      streak,
+      best: Math.max(best, streak),
+      name: profile?.name || user.displayName || '',
+    })
+  }, [ready, streak, best, profile, user])
 
   async function toggle(taskId) {
     const next = doneIds.includes(taskId)

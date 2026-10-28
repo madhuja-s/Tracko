@@ -1,6 +1,13 @@
 import { useState } from 'react'
 import { Link, Navigate, useNavigate } from 'react-router-dom'
-import { signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth'
+import {
+  signInWithEmailAndPassword,
+  signInWithPopup,
+  signInWithCredential,
+  GoogleAuthProvider,
+} from 'firebase/auth'
+import { Capacitor } from '@capacitor/core'
+import { FirebaseAuthentication } from '@capacitor-firebase/authentication'
 import { auth, googleProvider } from '../firebase'
 import { useAuth } from '../context/AuthContext'
 import { ensureProfile } from '../services/userService'
@@ -36,11 +43,21 @@ export default function Login() {
     setError('')
     setBusy(true)
     try {
-      const cred = await signInWithPopup(auth, googleProvider)
+      let cred
+      if (Capacitor.isNativePlatform()) {
+        // inside the Android app: use the phone's own Google login
+        const result = await FirebaseAuthentication.signInWithGoogle()
+        const credential = GoogleAuthProvider.credential(result.credential?.idToken)
+        cred = await signInWithCredential(auth, credential)
+      } else {
+        // on the website: keep the popup
+        cred = await signInWithPopup(auth, googleProvider)
+      }
       await ensureProfile(cred.user)
       navigate('/')
     } catch (err) {
-      setError(friendlyError(err))
+      console.error(err)
+      setError(String(err?.code || err?.message || err))
     } finally {
       setBusy(false)
     }
